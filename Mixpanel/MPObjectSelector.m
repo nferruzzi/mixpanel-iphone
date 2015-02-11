@@ -377,10 +377,14 @@
         if (((UIViewController *)obj).presentedViewController && (!class || [((UIViewController *)obj).presentedViewController isKindOfClass:class])) {
             [children addObject:((UIViewController *)obj).presentedViewController];
         }
-        if (!class || [((UIViewController *)obj).view isKindOfClass:class]) {
-            [children addObject:((UIViewController *)obj).view];
-        }
+        
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            if (!class || [((UIViewController *)obj).view isKindOfClass:class]) {
+                [children addObject:((UIViewController *)obj).view];
+            }
+        });
     }
+    
     NSArray *result;
     // Reorder the cells in a table view so that they are arranged by y position
     if ([class isSubclassOfClass:[UITableViewCell class]]) {
